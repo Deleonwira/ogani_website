@@ -127,7 +127,7 @@ jobs:
   # Deploy to Vermicide's Ubuntu laptop
   deploy-vermicide:
     name: Deploy to Vermicide (Ubuntu)
-    runs-on: [self-hosted, laptop-vermicide]
+    runs-on: [self-hosted, my-laptop]
     
     steps:
     - name: Set project path
@@ -233,9 +233,9 @@ jobs:
       if: always()
       run: |
         if [ ${{ job.status }} == 'success' ]; then
-          echo "✅ Deployment SUCCESS on laptop-vermicide (Ubuntu)"
+          echo "✅ Deployment SUCCESS on my-laptop (Ubuntu)"
           echo "🌐 Application: http://localhost:8080"
           echo "🗄️  phpMyAdmin: http://localhost:8081"
         else
-          echo "❌ Deployment FAILED on laptop-vermicide (Ubuntu)"
+          echo "❌ Deployment FAILED on my-laptop (Ubuntu)"
         fi
