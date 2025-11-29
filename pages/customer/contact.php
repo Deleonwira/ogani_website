@@ -1,3 +1,4 @@
+<?php include '../includes/header.php'?>
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -5,16 +6,16 @@
 
 <body>
     <!-- Page Preloder -->
-    <!-- <div id="preloder">
+    <div id="preloder">
         <div class="loader"></div>
-    </div> -->
+    </div>
 
     <!-- Humberger Begin -->
     <?php include '../includes/hamburger.php'?>
     <!-- Humberger End -->
 
     <!-- Header Section Begin -->
-    <?php include '../includes/header.php'?>
+    
     <!-- Header Section End -->
 
     <!-- Hero Section Begin -->

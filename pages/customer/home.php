@@ -1,5 +1,5 @@
 <?php require_once '../../database/db_connect.php'; ?>
-
+<?php include '../includes/header.php'?>
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -8,17 +8,13 @@
 
 
 <body>
-    <!-- Page Preloder -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
-
+   
     <!-- Humberger Begin -->
     <?php include '../includes/hamburger.php'?>
     <!-- Humberger End -->
 
     <!-- Header Section Begin -->
-    <?php include '../includes/header.php'?>
+    
     <!-- Header Section End -->
 
     <!-- Hero Section Begin -->

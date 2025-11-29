@@ -10,8 +10,8 @@ if (!isset($_SESSION['user_id'])) {
 
 
 $user_id = $_SESSION['user_id'];
-$product_id = intval($_POST['product_id']);
-$quantity = intval($_POST['quantity']);
+$product_id = intval($_GET['product_id']);
+$quantity = intval($_GET['quantity']);
 
 
 $sql = "SELECT * FROM cart WHERE user_id = ? AND product_id = ?";

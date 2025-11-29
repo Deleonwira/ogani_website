@@ -1,3 +1,4 @@
+<?php include '../includes/header.php'?>
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -14,7 +15,7 @@
     <!-- Humberger End -->
 
     <!-- Header Section Begin -->
-    <?php include '../includes/header.php'?>
+    
     <!-- Header Section End -->
 
     <!-- Hero Section Begin -->

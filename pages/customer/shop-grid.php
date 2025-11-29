@@ -1,5 +1,5 @@
 <?php require_once '../../database/db_connect.php'; ?>
-
+<?php include '../includes/header.php'?>
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -16,7 +16,7 @@
     <!-- Humberger End -->
 
     <!-- Header Section Begin -->
-    <?php include '../includes/header.php'?>
+    
     <!-- Header Section End -->
 
     <!-- Hero Section Begin -->
@@ -265,7 +265,7 @@
                                             <ul class="product__item__pic__hover">
                                                 <li><a href="#"><i class="fa fa-heart"></i></a></li>
                                                 <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                                <li><a href="add_to_cart.php?product_id=' . $row['product_id'] . '"><i class="fa fa-shopping-cart"></i></a></li>
+                                                <li><a href="../../database/add_to_cart.php?product_id=' . $row['product_id'] . '&quantity=1"><i class="fa fa-shopping-cart"></i></a></li>
                                             </ul>
                                         </div>
                                         <div class="product__item__text">
