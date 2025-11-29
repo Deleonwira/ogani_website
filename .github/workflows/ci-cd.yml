@@ -79,7 +79,7 @@ jobs:
         fi
 
   deploy-vermicide:
-    runs-on: [laptop-vermicide]
+    runs-on: [my-laptop]
     
     steps:
     # Step 0: Detect project path dynamically
@@ -138,8 +138,8 @@ jobs:
       if: always()  # Selalu jalankan step ini (sukses atau gagal)
       run: |
         if [ ${{ job.status }} == 'success' ]; then
-          echo "✅ Deployment berhasil di laptop-vermicide! Aplikasi sudah update ke versi terbaru"
+          echo "✅ Deployment berhasil di my-laptop! Aplikasi sudah update ke versi terbaru"
         else
-          echo "❌ Deployment gagal di laptop-vermicide! Cek log error di atas"
+          echo "❌ Deployment gagal di my-laptop! Cek log error di atas"
         fi
 
