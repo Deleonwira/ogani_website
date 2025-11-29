@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile.nginx
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
       - .:/var/www/myphpapp
     depends_on:
