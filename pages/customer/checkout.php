@@ -1,7 +1,13 @@
+<?php 
+require_once "../../database/db_connect.php";
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="zxx">
 
-<?php include '../includes/head.php'?>
+<?php include "../includes/head.php"; ?>
 
 <body>
     <!-- Page Preloder -->
@@ -10,11 +16,11 @@
     </div> -->
 
     <!-- Humberger Begin -->
-    <?php include '../includes/hamburger.php'?>
+    <?php include "../includes/hamburger.php"; ?>
     <!-- Humberger End -->
 
     <!-- Header Section Begin -->
-    <?php include '../includes/header.php'?>
+    <?php include "../includes/header.php"; ?>
     <!-- Header Section End -->
 
     <!-- Hero Section Begin -->
@@ -90,41 +96,36 @@
 
     <!-- Checkout Section Begin -->
     <?php
-        require_once '../../database/db_connect.php';
-        if (session_status() === PHP_SESSION_NONE) session_start();
+    if (!isset($_SESSION["user_id"])) {
+      header("Location: ../login.php");
+      exit();
+    }
 
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: ../login.php');
-            exit;
-        }
+    $user_id = $_SESSION["user_id"];
 
-        $user_id = $_SESSION['user_id'];
-
-        
-        $sql = "SELECT c.product_id, c.quantity, p.product_name, p.price, p.product_image
+    $sql = "SELECT c.product_id, c.quantity, p.product_name, p.price, p.product_image
                 FROM cart c
                 JOIN products p ON c.product_id = p.product_id
                 WHERE c.user_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        $cartItems = [];
-        $total = 0;
+    $cartItems = [];
+    $total = 0;
 
-        while ($row = $result->fetch_assoc()) {
-            $subtotal = $row['price'] * $row['quantity'];
-            $row['subtotal'] = $subtotal;
-            $total += $subtotal;
-            $cartItems[] = $row;
-        }
+    while ($row = $result->fetch_assoc()) {
+      $subtotal = $row["price"] * $row["quantity"];
+      $row["subtotal"] = $subtotal;
+      $total += $subtotal;
+      $cartItems[] = $row;
+    }
 
-        
-        if (empty($cartItems)) {
-            echo "<script>alert('Keranjang masih kosong!'); window.location.href='shop-grid.php';</script>";
-            exit;
-        }
+    if (empty($cartItems)) {
+      echo "<script>alert('Keranjang masih kosong!'); window.location.href='shop-grid.php';</script>";
+      exit();
+    }
     ?>
     <section class="checkout spad">
         <div class="container">
@@ -133,6 +134,7 @@
             <div class="checkout__form">
                 <h4>Billing Details</h4>
                 <form action="../../database/checkout_process.php" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                     <div class="row">
                        
                         <div class="col-lg-8 col-md-6">
@@ -165,16 +167,25 @@
                                 <ul>
                                     <?php foreach ($cartItems as $item): ?>
                                         <li>
-                                            <?= htmlspecialchars($item['product_name']); ?>
-                                            <span>Rp<?= number_format($item['subtotal'], 2); ?></span>
+                                            <?= htmlspecialchars($item["product_name"]) ?>
+                                            <span>Rp<?= number_format(
+                                              $item["subtotal"],
+                                              2,
+                                            ) ?></span>
                                         </li>
                                     <?php endforeach; ?>
                                 </ul>
 
-                                <div class="checkout__order__subtotal">Subtotal <span>Rp<?= number_format($total, 2); ?></span></div>
-                                <div class="checkout__order__total">Total <span>Rp<?= number_format($total, 2); ?></span></div>
+                                <div class="checkout__order__subtotal">Subtotal <span>Rp<?= number_format(
+                                  $total,
+                                  2,
+                                ) ?></span></div>
+                                <div class="checkout__order__total">Total <span>Rp<?= number_format(
+                                  $total,
+                                  2,
+                                ) ?></span></div>
 
-                                <input type="hidden" name="total_price" value="<?= $total; ?>">
+                                <input type="hidden" name="total_price" value="<?= $total ?>">
                                 <button type="submit" class="site-btn w-100 mt-3">PLACE ORDER</button>
                             </div>
                         </div>
@@ -258,7 +269,7 @@
     <!-- Footer Section End -->
 
     <!-- Js Plugins -->
-    <?php include '../includes/js.php' ?>
+    <?php include "../includes/js.php"; ?>
 
  
 

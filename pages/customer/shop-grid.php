@@ -1,22 +1,21 @@
-<?php require_once '../../database/db_connect.php'; ?>
-
+<?php require_once "../../database/db_connect.php"; ?>
+<?php include "../includes/header.php"; ?>
 <!DOCTYPE html>
 <html lang="zxx">
 
-<?php include '../includes/head.php'?>
+<?php include "../includes/head.php"; ?>
 
 <body>
     <!-- Page Preloder -->
-    <div id="preloder">
+    <!-- <div id="preloder">
         <div class="loader"></div>
-    </div>
+    </div> -->
 
     <!-- Humberger Begin -->
-    <?php include '../includes/hamburger.php'?>
+    <?php include "../includes/hamburger.php"; ?>
     <!-- Humberger End -->
 
     <!-- Header Section Begin -->
-    <?php include '../includes/header.php'?>
     <!-- Header Section End -->
 
     <!-- Hero Section Begin -->
@@ -58,7 +57,7 @@
                         <div class="sidebar__item">
                             <h4>Department</h4>
                             <ul>
-                                <?php include '../includes/categories.php'?>
+                                <?php include "../includes/categories.php"; ?>
                             </ul>
                         </div>
                        
@@ -185,53 +184,47 @@
                             </div>
                         </div>
                     </div> -->
-                    <?php 
-                        $sort = isset($_GET['sort']) ? $_GET['sort'] : 'default';
-                        $category = isset($_GET['category']) ? $_GET['category'] : null;
-
-                    
+                    <?php
+                    $sort = isset($_GET["sort"]) ? $_GET["sort"] : "default";
+                    $category = isset($_GET["category"]) ? $_GET["category"] : null;
+                    $orderBy = "";
+                    switch ($sort) {
+                      case "price_asc":
+                        $orderBy = "ORDER BY p.price ASC";
+                        break;
+                      case "price_desc":
+                        $orderBy = "ORDER BY p.price DESC";
+                        break;
+                      case "name_asc":
+                        $orderBy = "ORDER BY p.product_name ASC";
+                        break;
+                      case "name_desc":
+                        $orderBy = "ORDER BY p.product_name DESC";
+                        break;
+                      default:
                         $orderBy = "";
-                        switch ($sort) {
-                            case 'price_asc':
-                                $orderBy = "ORDER BY p.price ASC";
-                                break;
-                            case 'price_desc':
-                                $orderBy = "ORDER BY p.price DESC";
-                                break;
-                            case 'name_asc':
-                                $orderBy = "ORDER BY p.product_name ASC";
-                                break;
-                            case 'name_desc':
-                                $orderBy = "ORDER BY p.product_name DESC";
-                                break;
-                            default:
-                                $orderBy = "";
-                        }
-
-                       
-                        $where = "";
-                        if ($category) {
-                            $stmt = $conn->prepare("SELECT category_id FROM categories WHERE category_name = ?");
-                            $stmt->bind_param("s", $category);
-                            $stmt->execute();
-                            $catResult = $stmt->get_result()->fetch_assoc();
-                        
-                            if ($catResult) {
-                                $cat_id = $catResult['category_id'];
-                                $where = "WHERE p.category_id = " . intval($cat_id);
-                            }
-                        }
-
-                       
-                        $sql3 = "SELECT p.*, c.category_name 
+                    }
+                    $where = "";
+                    if ($category) {
+                      $stmt = $conn->prepare(
+                        "SELECT category_id FROM categories WHERE category_name = ?",
+                      );
+                      $stmt->bind_param("s", $category);
+                      $stmt->execute();
+                      $catResult = $stmt->get_result()->fetch_assoc();
+                      if ($catResult) {
+                        $cat_id = $catResult["category_id"];
+                        $where = "WHERE p.category_id = " . intval($cat_id);
+                      }
+                    }
+                    $sql3 = "SELECT p.*, c.category_name 
                                  FROM products p 
                                  JOIN categories c ON p.category_id = c.category_id 
                                  $where 
                                  $orderBy";
-
-                        $result3 = $conn->query($sql3);
-                        $totalProducts = $result3->num_rows;
-                        ?>
+                    $result3 = $conn->query($sql3);
+                    $totalProducts = $result3->num_rows;
+                    ?>
 
                          <div class="filter__item">
                             <div class="row">
@@ -252,33 +245,41 @@
                         </div>
 
                         <div class="row">
-                        <?php
-                     
-                        
-                        if ($totalProducts > 0) {
-                            while ($row = $result3->fetch_assoc()) {
-                                $img = !empty($row['product_image']) ?  $row['product_image'] : 'assets/img/no-image.jpg';
-                                echo '
+                        <?php if ($totalProducts > 0) {
+                          while ($row = $result3->fetch_assoc()) {
+                            $img = !empty($row["product_image"])
+                              ? $row["product_image"]
+                              : "assets/img/no-image.jpg";
+                            echo '
                                 <div class="col-lg-4 col-md-6 col-sm-6">
                                     <div class="product__item">
-                                        <div class="product__item__pic set-bg" data-setbg="' . $img . '">
+                                        <div class="product__item__pic set-bg" data-setbg="' .
+                              $img .
+                              '">
                                             <ul class="product__item__pic__hover">
                                                 <li><a href="#"><i class="fa fa-heart"></i></a></li>
                                                 <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                                <li><a href="add_to_cart.php?product_id=' . $row['product_id'] . '"><i class="fa fa-shopping-cart"></i></a></li>
+                                                <li><a href="../../database/add_to_cart.php?product_id=' .
+                              $row["product_id"] .
+                              '"><i class="fa fa-shopping-cart"></i></a></li>
                                             </ul>
                                         </div>
                                         <div class="product__item__text">
-                                            <h6><a href="shop-details.php?product_id=' . $row['product_id'] . '">' . htmlspecialchars($row['product_name']) . '</a></h6>
-                                            <h5>Rp' . number_format($row['price'], 2) . '</h5>
+                                            <h6><a href="shop-details.php?product_id=' .
+                              $row["product_id"] .
+                              '">' .
+                              htmlspecialchars($row["product_name"]) .
+                              '</a></h6>
+                                            <h5>Rp' .
+                              number_format($row["price"], 2) .
+                              '</h5>
                                         </div>
                                     </div>
                                 </div>';
-                            }
+                          }
                         } else {
-                            echo "<p>No products found.</p>";
-                        }
-                        ?>
+                          echo "<p>No products found.</p>";
+                        } ?>
                         </div>
                     <div class="product__pagination">
                         <a href="#">1</a>
@@ -361,7 +362,7 @@
     <!-- Footer Section End -->
 
     <!-- Js Plugins -->
-    <?php include '../includes/js.php' ?>
+    <?php include "../includes/js.php"; ?>
 
 
 

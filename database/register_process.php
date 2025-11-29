@@ -1,44 +1,57 @@
 <?php
-require_once '../database/db_connect.php';
+require_once __DIR__ . "/db_connect.php";
+require_once __DIR__ . "/flash_message.php";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
-    $username = trim($_POST['username']);
-    $email = trim($_POST['email']);
-    $phone = trim($_POST['phone']);
-    $password = $_POST['password'];
-    $confirm_password = $_POST['confirm_password'];
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
 
-    
-    if ($password !== $confirm_password) {
-        echo "<script>alert('Password dan konfirmasi password tidak cocok!'); window.history.back();</script>";
-        exit;
-    }
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  // CSRF validation
+  if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    setFlashMessage('danger', 'Token CSRF tidak valid. Silakan muat ulang halaman dan coba lagi.');
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit();
+  }
 
-    
-    $check = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $check->bind_param("s", $email);
-    $check->execute();
-    $result = $check->get_result();
+  $username = trim($_POST["username"]);
+  $email = trim($_POST["email"]);
+  $phone = trim($_POST["phone"]);
+  $password = $_POST["password"];
+  $confirm_password = $_POST["confirm_password"];
 
-    if ($result->num_rows > 0) {
-        echo "<script>alert('Email sudah terdaftar! Silakan gunakan email lain.'); window.history.back();</script>";
-        exit;
-    }
+  if ($password !== $confirm_password) {
+    setFlashMessage('warning', 'Password dan konfirmasi password tidak cocok!');
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit();
+  }
 
-   
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+  $check = $conn->prepare("SELECT * FROM users WHERE email = ?");
+  $check->bind_param("s", $email);
+  $check->execute();
+  $result = $check->get_result();
 
-   
-    $stmt = $conn->prepare("INSERT INTO users (username, email, phone_number, password, role) VALUES (?, ?, ?, ?, 'customer')");
-    $stmt->bind_param("ssss", $username, $email, $phone, $hashed_password);
+  if ($result->num_rows > 0) {
+    setFlashMessage('warning', 'Email sudah terdaftar! Silakan gunakan email lain.');
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit();
+  }
 
-    if ($stmt->execute()) {
-        echo "<script>alert('Akun berhasil dibuat! Silakan login.'); window.location.href='../pages/login.php';</script>";
-    } else {
-        echo "<script>alert('Gagal mendaftar! Coba lagi.'); window.history.back();</script>";
-    }
+  $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt->close();
+  $stmt = $conn->prepare(
+    "INSERT INTO users (username, email, phone_number, password, role) VALUES (?, ?, ?, ?, 'customer')"
+  );
+  $stmt->bind_param("ssss", $username, $email, $phone, $hashed_password);
+
+  if ($stmt->execute()) {
+    setFlashMessage('success', 'Akun berhasil dibuat! Silakan login.');
+    header("Location: ../pages/login.php");
+  } else {
+    setFlashMessage('danger', 'Gagal mendaftar! Coba lagi.');
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+  }
+
+  $stmt->close();
 }
 ?>

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .toggle-bg:after {
-  content: '';
+  content: "";
   @apply absolute left-0.5 top-0.5 bg-white border border-gray-300 h-5 w-5 rounded-full ring-0 transition;
 }
 
@@ -16,7 +16,8 @@ input:checked + .toggle-bg {
   @apply bg-cyan-600 border-cyan-600;
 }
 
-[type=checkbox], [type=radio]{
+[type="checkbox"],
+[type="radio"] {
   @apply text-cyan-600;
 }
 /* chart styles */
@@ -50,7 +51,7 @@ input:checked + .toggle-bg {
   @apply shadow-none left-0 bottom-0 !important;
 }
 
-.svgMap-map-wrapper .svgMap-control-button  {
+.svgMap-map-wrapper .svgMap-control-button {
   @apply rounded-lg border-solid border border-gray-300 hover:bg-gray-100 !important;
 }
 
@@ -62,11 +63,16 @@ input:checked + .toggle-bg {
   @apply bg-white shadow-lg rounded-lg border-0 text-left !important;
 }
 
-.svgMap-tooltip .svgMap-tooltip-content-container .svgMap-tooltip-flag-container {
+.svgMap-tooltip
+  .svgMap-tooltip-content-container
+  .svgMap-tooltip-flag-container {
   @apply inline-block mr-2 text-left border-0 p-0 !important;
 }
 
-.svgMap-tooltip .svgMap-tooltip-content-container .svgMap-tooltip-flag-container .svgMap-tooltip-flag {
+.svgMap-tooltip
+  .svgMap-tooltip-content-container
+  .svgMap-tooltip-flag-container
+  .svgMap-tooltip-flag {
   @apply inline-block border-0 h-4 p-0 !important;
 }
 

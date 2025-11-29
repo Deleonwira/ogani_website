@@ -1,8 +1,13 @@
-<?php require_once '../../database/db_connect.php'; ?>
+<?php 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once "../../database/db_connect.php"; 
+?>
 <!DOCTYPE html>
 <html lang="zxx">
 
-<?php include '../includes/head.php'?>
+<?php include "../includes/head.php"; ?>
 
 <body>
     <!-- Page Preloder -->
@@ -11,11 +16,11 @@
     </div>
 
     <!-- Humberger Begin -->
-    <?php include '../includes/hamburger.php'?>
+    <?php include "../includes/hamburger.php"; ?>
     <!-- Humberger End -->
 
     <!-- Header Section Begin -->
-    <?php include '../includes/header.php'?>
+    <?php include "../includes/header.php"; ?>
     <!-- Header Section End -->
 
     <!-- Hero Section Begin -->
@@ -24,7 +29,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="hero__categories">
-                        <?php include '../includes/categories.php'?>
+                        <?php include "../includes/categories.php"; ?>
                     </div>
                 </div>
                 <div class="col-lg-9">
@@ -74,23 +79,23 @@
     </section> -->
     <!-- Breadcrumb Section End -->
     <?php
-        if (!isset($_GET['product_id'])) {
-        die("Product ID not found.");
+    if (!isset($_GET["product_id"])) {
+      die("Product ID not found.");
     }
-    
-    $product_id = intval($_GET['product_id']);
-    
+
+    $product_id = intval($_GET["product_id"]);
+
     $sql = "SELECT p.*, c.category_name 
             FROM products p
             JOIN categories c ON p.category_id = c.category_id
             WHERE p.product_id = $product_id";
-            
+
     $result = $conn->query($sql);
-    
+
     if ($result->num_rows == 0) {
-        die("Product not found.");
+      die("Product not found.");
     }
-    
+
     $product = $result->fetch_assoc();
     ?>
 
@@ -103,8 +108,10 @@
                     <div class="product__details__pic">
                         <div class="product__details__pic__item">
                          <!-- gambar produk -->
-                            <img class="product__details__pic__item--large" src="<?= htmlspecialchars($product['product_image']); ?>"
-                            alt="<?= htmlspecialchars($product['product_name']); ?>">
+                            <img class="product__details__pic__item--large" src="<?= htmlspecialchars(
+                              $product["product_image"],
+                            ) ?>"
+                            alt="<?= htmlspecialchars($product["product_name"]) ?>">
                         </div>
                      </div>
                 </div>
@@ -112,7 +119,7 @@
                 <div class="col-lg-6 col-md-6">
                     <div class="product__details__text">
                         <!-- Nama Produk -->
-                        <h3><?= htmlspecialchars($product['product_name']); ?></h3>
+                        <h3><?= htmlspecialchars($product["product_name"]) ?></h3>
 
                         <!-- Rating (bisa dibuat dinamis nanti dari tabel review) -->
                         <div class="product__details__rating">
@@ -126,11 +133,11 @@
 
                         <!-- Harga Produk -->
                         <div class="product__details__price">
-                            Rp<?= number_format($product['price'], 2); ?>
+                            Rp<?= number_format($product["price"], 2) ?>
                         </div>
 
                         <!-- Deskripsi Produk -->
-                        <p><?= nl2br(htmlspecialchars($product['description'])); ?></p>
+                        <p><?= nl2br(htmlspecialchars($product["description"])) ?></p>
 
                        <form action="../../database/add_to_cart.php" method="POST">
                             <div class="product__details__quantity">
@@ -141,7 +148,41 @@
                                 </div>
                             </div>
 
-                            <input type="hidden" name="product_id" value="<?= $product['product_id']; ?>">
+                            <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['product_id']) ?>">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(
+                              
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                $_SESSION['csrf_token']
+                            ) ?>">
                             <button type="submit" style="border: none;" class="primary-btn">ADD TO CART</button>
                         </form>
 
@@ -228,7 +269,7 @@
     <!-- Footer Section End -->
 
     <!-- Js Plugins -->
-    <?php include '../includes/js.php' ?>
+    <?php include "../includes/js.php"; ?>
 
 
 </body>

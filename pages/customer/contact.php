@@ -1,7 +1,8 @@
+<?php include "../includes/header.php"; ?>
 <!DOCTYPE html>
 <html lang="zxx">
 
-<?php include '../includes/head.php'?>
+<?php include "../includes/head.php"; ?>
 
 <body>
     <!-- Page Preloder -->
@@ -10,11 +11,11 @@
     </div> -->
 
     <!-- Humberger Begin -->
-    <?php include '../includes/hamburger.php'?>
+    <?php include "../includes/hamburger.php"; ?>
     <!-- Humberger End -->
 
     <!-- Header Section Begin -->
-    <?php include '../includes/header.php'?>
+    
     <!-- Header Section End -->
 
     <!-- Hero Section Begin -->
@@ -239,7 +240,7 @@
     </footer>
     <!-- Footer Section End -->
 
-    <?php include '../includes/js.php' ?>
+    <?php include "../includes/js.php"; ?>
 
 
 

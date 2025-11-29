@@ -1,11 +1,6 @@
-{{ define "main" }}
+{{ define "main" }} {{ if .Params.navigation }} {{ partial "navbar-main" . }} {{
+end }}
 
-{{ if .Params.navigation }} {{ partial "navbar-main" . }} {{ end }}
+<main class="bg-gray-50">{{ .Content }}</main>
 
-<main class="bg-gray-50">
-  {{ .Content }}
-</main>
-
-{{ if .Params.footer }} {{ partial "footer-main" . }} {{ end }}
-
-{{ end }}
+{{ if .Params.footer }} {{ partial "footer-main" . }} {{ end }} {{ end }}

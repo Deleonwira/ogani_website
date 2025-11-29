@@ -1,0 +1,11 @@
+.git/
+node_modules/
+assets/Source/
+ogani-master-templates/
+windster-1.0.0/
+**/*.min.css
+**/*.min.js
+**/*.zip
+**/*.map
+
+

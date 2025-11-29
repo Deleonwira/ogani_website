@@ -1,10 +1,10 @@
-<?php require_once '../../database/db_connect.php'; ?>
-
+<?php require_once "../../database/db_connect.php"; ?>
+<?php include "../includes/header.php"; ?>
 <!DOCTYPE html>
 <html lang="zxx">
 
 
-<?php include '../includes/head.php'?>
+<?php include "../includes/head.php"; ?>
 
 
 <body>
@@ -14,12 +14,10 @@
     </div>
 
     <!-- Humberger Begin -->
-    <?php include '../includes/hamburger.php'?>
+    <?php include "../includes/hamburger.php"; ?>
     <!-- Humberger End -->
 
-    <!-- Header Section Begin -->
-    <?php include '../includes/header.php'?>
-    <!-- Header Section End -->
+    
 
     <!-- Hero Section Begin -->
     <section class="hero">
@@ -27,7 +25,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="hero__categories">
-                        <?php include '../includes/categories.php'?>
+                        <?php include "../includes/categories.php"; ?>
                     </div>
                 </div>
                 <div class="col-lg-9">
@@ -75,18 +73,23 @@
                 <?php
                 $sql2 = "SELECT * FROM categories";
                 $result2 = $conn->query($sql2);
-                
                 if ($result2->num_rows > 0) {
-                    while($row = $result2->fetch_assoc()) {
-                        echo '
+                  while ($row = $result2->fetch_assoc()) {
+                    echo '
                         <div class="col-lg-3">
-                            <div class="categories__item set-bg" data-setbg="' . htmlspecialchars($row['image']) . '">
-                                <h5><a href="shop-grid.php?category=' . htmlspecialchars($row['category_name'])  . '">' . htmlspecialchars($row['category_name']) . '</a></h5>
+                            <div class="categories__item set-bg" data-setbg="' .
+                      htmlspecialchars($row["image"]) .
+                      '">
+                                <h5><a href="shop-grid.php?category=' .
+                      htmlspecialchars($row["category_name"]) .
+                      '">' .
+                      htmlspecialchars($row["category_name"]) .
+                      '</a></h5>
                             </div>
                         </div>';
-                    }
+                  }
                 } else {
-                    echo '<p>No categories found.</p>';
+                  echo "<p>No categories found.</p>";
                 }
                 ?>
             </div>
@@ -109,21 +112,19 @@
                         <ul>
                             <li class="active" data-filter="*">All</li>
                             <?php
-                           
                             $sqlCategories = "SELECT * FROM categories";
                             $resultCategories = $conn->query($sqlCategories);
-                                    
                             if ($resultCategories->num_rows > 0) {
-                                while($row = $resultCategories->fetch_assoc()) {
-                                    
-                                    $slug = strtolower(str_replace(' ', '-', $row['category_name']));
-                                
-                                    echo '<li data-filter=".' . htmlspecialchars($slug) . '">' 
-                                        . htmlspecialchars($row['category_name']) . 
-                                        '</li>';
-                                }
+                              while ($row = $resultCategories->fetch_assoc()) {
+                                $slug = strtolower(str_replace(" ", "-", $row["category_name"]));
+                                echo '<li data-filter=".' .
+                                  htmlspecialchars($slug) .
+                                  '">' .
+                                  htmlspecialchars($row["category_name"]) .
+                                  "</li>";
+                              }
                             } else {
-                                echo '<li>No categories found</li>';
+                              echo "<li>No categories found</li>";
                             }
                             ?>
                         </ul>
@@ -132,25 +133,26 @@
             </div>
             <div class="row featured__filter">
     <?php
-    
     $sqlItems = "
         SELECT products.*, categories.category_name 
         FROM products
         JOIN categories ON products.category_id = categories.category_id
     ";
     $resultItems = $conn->query($sqlItems);
-
     if ($resultItems->num_rows > 0) {
-        while ($row = $resultItems->fetch_assoc()) {
-            $categorySlug = strtolower(str_replace(' ', '-', $row['category_name']));
-            $itemName = htmlspecialchars($row['product_name']);
-            $itemPrice = htmlspecialchars(number_format($row['price'], 2));
-            $itemImage = htmlspecialchars($row['product_image']);
-
-            echo '
-            <div class="col-lg-3 col-md-4 col-sm-6 mix ' . $categorySlug . '">
+      while ($row = $resultItems->fetch_assoc()) {
+        $categorySlug = strtolower(str_replace(" ", "-", $row["category_name"]));
+        $itemName = htmlspecialchars($row["product_name"]);
+        $itemPrice = htmlspecialchars(number_format($row["price"], 2));
+        $itemImage = htmlspecialchars($row["product_image"]);
+        echo '
+            <div class="col-lg-3 col-md-4 col-sm-6 mix ' .
+          $categorySlug .
+          '">
                 <div class="featured__item">
-                    <div class="featured__item__pic set-bg" data-setbg="' . $itemImage . '">
+                    <div class="featured__item__pic set-bg" data-setbg="' .
+          $itemImage .
+          '">
                         <ul class="featured__item__pic__hover">
                             <li><a href="#"><i class="fa fa-heart"></i></a></li>
                             <li><a href="#"><i class="fa fa-retweet"></i></a></li>
@@ -158,14 +160,20 @@
                         </ul>
                     </div>
                     <div class="featured__item__text">
-                        <h6><a href="shop-details.php?product_id=' . $row['product_id'] . '">' . $itemName . '</a></h6>
-                        <h5>Rp' . $itemPrice . '</h5>
+                        <h6><a href="shop-details.php?product_id=' .
+          $row["product_id"] .
+          '">' .
+          $itemName .
+          '</a></h6>
+                        <h5>Rp' .
+          $itemPrice .
+          '</h5>
                     </div>
                 </div>
             </div>';
-        }
+      }
     } else {
-        echo '<p>No featured items found.</p>';
+      echo "<p>No featured items found.</p>";
     }
     ?>
 </div>
@@ -266,7 +274,7 @@
     <!-- Footer Section End -->
 
     <!-- Js Plugins -->
-    <?php include '../includes/js.php' ?>
+    <?php include "../includes/js.php"; ?>
 
 
 

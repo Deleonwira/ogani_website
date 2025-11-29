@@ -1,0 +1,24 @@
+{
+  "name": "ogani_website",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Deleonwira/ogani_website.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Deleonwira/ogani_website/issues"
+  },
+  "homepage": "https://github.com/Deleonwira/ogani_website#readme",
+  "description": "",
+  "devDependencies": {
+    "@prettier/plugin-php": "^0.24.0",
+    "prettier": "^3.6.2"
+  }
+}

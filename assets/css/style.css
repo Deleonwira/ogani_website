@@ -1093,9 +1093,7 @@ ol {
   background: #dd2222;
   border-radius: 0;
 }
-.price-range-wrap
-  .price-range
-  .ui-slider-range.ui-corner-all.ui-widget-header:last-child {
+.price-range-wrap .price-range .ui-slider-range.ui-corner-all.ui-widget-header:last-child {
   background: #dd2222;
 }
 
@@ -1187,9 +1185,7 @@ ol {
   width: 100%;
 }
 
-.product__discount__item:hover
-  .product__discount__item__pic
-  .product__item__pic__hover {
+.product__discount__item:hover .product__discount__item__pic .product__item__pic__hover {
   bottom: 20px;
 }
 
@@ -1789,22 +1785,10 @@ ol {
 .shoping__cart__table table tbody tr td.shoping__cart__quantity .pro-qty input {
   color: #1c1c1c;
 }
-.shoping__cart__table
-  table
-  tbody
-  tr
-  td.shoping__cart__quantity
-  .pro-qty
-  input::placeholder {
+.shoping__cart__table table tbody tr td.shoping__cart__quantity .pro-qty input::placeholder {
   color: #1c1c1c;
 }
-.shoping__cart__table
-  table
-  tbody
-  tr
-  td.shoping__cart__quantity
-  .pro-qty
-  .qtybtn {
+.shoping__cart__table table tbody tr td.shoping__cart__quantity .pro-qty .qtybtn {
   width: 15px;
 }
 

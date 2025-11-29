@@ -1,14 +1,13 @@
 <?php
 session_start();
-require_once '../../database/db_connect.php';
+require_once "../../database/db_connect.php";
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
-    exit;
+if (!isset($_SESSION["user_id"])) {
+  header("Location: ../login.php");
+  exit();
 }
 
-$user_id = $_SESSION['user_id'];
-
+$user_id = $_SESSION["user_id"];
 
 $sql2 = "SELECT order_id, invoice_code, total_price, order_status, order_time 
         FROM orders 
@@ -78,7 +77,7 @@ $result2 = $stmt->get_result();
     </style>
 </head>
 <body>
-<?php include '../includes/header.php'; ?>
+<?php include "../includes/header.php"; ?>
 <div class="order-container">
     <div class="order-header">
         <h3 class="fw-semibold">Riwayat Pesanan</h3>
@@ -99,16 +98,16 @@ $result2 = $stmt->get_result();
             <tbody>
             <?php while ($row = $result2->fetch_assoc()): ?>
                 <tr>
-                    <td><?= htmlspecialchars($row['invoice_code']); ?></td>
-                    <td><?= date('d M Y H:i', strtotime($row['order_time'])); ?></td>
-                    <td>Rp<?= number_format($row['total_price'], 0, ',', '.'); ?></td>
+                    <td><?= htmlspecialchars($row["invoice_code"]) ?></td>
+                    <td><?= date("d M Y H:i", strtotime($row["order_time"])) ?></td>
+                    <td>Rp<?= number_format($row["total_price"], 0, ",", ".") ?></td>
                     <td>
-                        <span class="status-badge <?= strtolower($row['order_status']); ?>">
-                            <?= htmlspecialchars($row['order_status']); ?>
+                        <span class="status-badge <?= strtolower($row["order_status"]) ?>">
+                            <?= htmlspecialchars($row["order_status"]) ?>
                         </span>
                     </td>
                     <td>
-                        <a href="order-detail.php?id=<?= $row['order_id']; ?>" class="btn-detail">
+                        <a href="order-detail.php?id=<?= $row["order_id"] ?>" class="btn-detail">
                             <i class='bx bx-show'></i> Detail
                         </a>
                     </td>
