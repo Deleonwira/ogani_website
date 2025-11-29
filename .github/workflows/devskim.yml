@@ -1,34 +1,241 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: DevSkim
+name: CI/CD Auto Pull and Rebuild
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ master ]
   pull_request:
-    branches: [ "master" ]
-  schedule:
-    - cron: '18 3 * * 2'
+    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
-  lint:
-    name: DevSkim
-    runs-on: debian-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
+  # Deploy to Fathur's Debian laptop
+  deploy-fathur:
+    name: Deploy to Fathur (Debian)
+    runs-on: [self-hosted, laptop-fathur]
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Set project path
+      run: |
+        PROJECT_PATH=$(find /home -name 'ogani_website' -type d 2>/dev/null | head -1)
+        if [ -z "$PROJECT_PATH" ]; then
+          echo "❌ Error: Folder ogani_website tidak ditemukan"
+          exit 1
+        fi
+        echo "PROJECT_PATH=$PROJECT_PATH" >> $GITHUB_ENV
+        echo "✅ Found project at: $PROJECT_PATH"
+        
+    - name: System Info
+      run: |
+        echo "🖥️  OS: $(lsb_release -d | cut -f2)"
+        echo "🐳 Docker: $(docker --version)"
+        echo "📦 Docker Compose: $(docker compose version)"
+        
+    - name: Pull latest changes
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        git fetch origin master
+        git reset --hard origin/master
+        echo "✅ Code updated to latest version"
+        
+    - name: Stop existing containers
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        docker compose down || true
+        echo "✅ Containers stopped"
+        
+    - name: Cleanup old images
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        docker system prune -f
+        docker image prune -a -f
+        echo "✅ Cleanup completed"
+        
+    - name: Create index.html if not exists
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        if [ ! -f "index.html" ]; then
+          cat > index.html << 'EOF'
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta http-equiv="refresh" content="0; url=/pages/login.php">
+            <title>Redirecting...</title>
+        </head>
+        <body>
+            <p>Redirecting to login page...</p>
+            <a href="/pages/login.php">Click here if not redirected</a>
+        </body>
+        </html>
+        EOF
+          echo "✅ Created index.html redirect file"
+        else
+          echo "ℹ️  index.html already exists"
+        fi
+        
+    - name: Build and start containers
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        docker compose build --no-cache
+        docker compose up -d
+        echo "✅ Containers started"
+        
+    - name: Wait for services
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        echo "⏳ Waiting 30 seconds for services to stabilize..."
+        sleep 30
+        docker compose ps
+        
+    - name: Health check
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        echo "🔍 Testing application health..."
+        max_attempts=30
+        attempt=0
+        
+        while [ $attempt -lt $max_attempts ]; do
+          echo "Attempt $((attempt+1))/$max_attempts"
+          
+          # Test login page
+          response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/pages/login.php 2>&1 || echo "000")
+          
+          if [ "$response" = "200" ]; then
+            echo "✅ Application is healthy (HTTP 200)"
+            exit 0
+          fi
+          
+          echo "Got HTTP $response, retrying..."
+          attempt=$((attempt+1))
+          sleep 2
+        done
+        
+        echo "❌ Health check failed"
+        docker compose logs --tail=50
+        exit 1
+        
+    - name: Deployment summary
+      if: always()
+      run: |
+        if [ ${{ job.status }} == 'success' ]; then
+          echo "✅ Deployment SUCCESS on laptop-fathur (Debian)"
+          echo "🌐 Application: http://localhost:8080"
+          echo "🗄️  phpMyAdmin: http://localhost:8081"
+        else
+          echo "❌ Deployment FAILED on laptop-fathur (Debian)"
+        fi
 
-      - name: Run DevSkim scanner
-        uses: microsoft/DevSkim-Action@v1
-
-      - name: Upload DevSkim scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: devskim-results.sarif
+  # Deploy to Vermicide's Ubuntu laptop
+  deploy-vermicide:
+    name: Deploy to Vermicide (Ubuntu)
+    runs-on: [self-hosted, laptop-vermicide]
+    
+    steps:
+    - name: Set project path
+      run: |
+        PROJECT_PATH=$(find /home -name 'ogani_website' -type d 2>/dev/null | head -1)
+        if [ -z "$PROJECT_PATH" ]; then
+          echo "❌ Error: Folder ogani_website tidak ditemukan"
+          exit 1
+        fi
+        echo "PROJECT_PATH=$PROJECT_PATH" >> $GITHUB_ENV
+        echo "✅ Found project at: $PROJECT_PATH"
+        
+    - name: System Info
+      run: |
+        echo "🖥️  OS: $(lsb_release -d | cut -f2)"
+        echo "🐳 Docker: $(docker --version)"
+        echo "📦 Docker Compose: $(docker compose version)"
+        
+    - name: Pull latest changes
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        git fetch origin master
+        git reset --hard origin/master
+        echo "✅ Code updated to latest version"
+        
+    - name: Stop existing containers
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        docker compose down || true
+        echo "✅ Containers stopped"
+        
+    - name: Cleanup old images
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        docker system prune -f
+        docker image prune -a -f
+        echo "✅ Cleanup completed"
+        
+    - name: Create index.html if not exists
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        if [ ! -f "index.html" ]; then
+          cat > index.html << 'EOF'
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta http-equiv="refresh" content="0; url=/pages/login.php">
+            <title>Redirecting...</title>
+        </head>
+        <body>
+            <p>Redirecting to login page...</p>
+            <a href="/pages/login.php">Click here if not redirected</a>
+        </body>
+        </html>
+        EOF
+          echo "✅ Created index.html redirect file"
+        else
+          echo "ℹ️  index.html already exists"
+        fi
+        
+    - name: Build and start containers
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        docker compose build --no-cache
+        docker compose up -d
+        echo "✅ Containers started"
+        
+    - name: Wait for services
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        echo "⏳ Waiting 30 seconds for services to stabilize..."
+        sleep 30
+        docker compose ps
+        
+    - name: Health check
+      working-directory: ${{ env.PROJECT_PATH }}
+      run: |
+        echo "🔍 Testing application health..."
+        max_attempts=30
+        attempt=0
+        
+        while [ $attempt -lt $max_attempts ]; do
+          echo "Attempt $((attempt+1))/$max_attempts"
+          
+          # Test login page
+          response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/pages/login.php 2>&1 || echo "000")
+          
+          if [ "$response" = "200" ]; then
+            echo "✅ Application is healthy (HTTP 200)"
+            exit 0
+          fi
+          
+          echo "Got HTTP $response, retrying..."
+          attempt=$((attempt+1))
+          sleep 2
+        done
+        
+        echo "❌ Health check failed"
+        docker compose logs --tail=50
+        exit 1
+        
+    - name: Deployment summary
+      if: always()
+      run: |
+        if [ ${{ job.status }} == 'success' ]; then
+          echo "✅ Deployment SUCCESS on laptop-vermicide (Ubuntu)"
+          echo "🌐 Application: http://localhost:8080"
+          echo "🗄️  phpMyAdmin: http://localhost:8081"
+        else
+          echo "❌ Deployment FAILED on laptop-vermicide (Ubuntu)"
+        fi
