@@ -1,4 +1,4 @@
-name: CI/CD Auto Pull and Rebuild
+name: DevSkim
 
 on:
   push:
